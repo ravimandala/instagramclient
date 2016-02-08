@@ -22,21 +22,22 @@ The following **optional** features are implemented:
 * [ ] Display a nice default placeholder graphic for each image during loading
 * [ ] Improved the user interface through styling and coloring
 
+The following **additional** features are implemented:
+
+* [x] ViewHolder pattern; Better exception handling in JSON parsing
+
 The following **bonus** features are implemented:
 
 * [ ] Show last 2 comments for each photo
 * [ ] Allow user to view all comments for an image within a separate activity or dialog fragment
 * [ ] Allow video posts to be played in full-screen using the VideoView
 
-The following **additional** features are implemented:
-
-* [x] ViewHolder pattern; Better exception handling in JSON parsing
 
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![Video Walkthrough of implemented user stories: ](app/src/main/res/drawable/app_demo.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
