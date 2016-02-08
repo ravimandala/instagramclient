@@ -11,12 +11,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class InstagramPhotoAdapter extends ArrayAdapter<InstagramPhoto> {
     private static class ViewHolder {
-        TextView tvCaption;
+        ImageView ivProfilePic;
+        TextView tvUsername;
+        TextView tvCreatedTime;
         ImageView ivPhoto;
+        TextView tvCaption;
+        TextView tvLikes;
     }
 
     public InstagramPhotoAdapter(Context context, List<InstagramPhoto> objects) {
@@ -31,17 +36,26 @@ public class InstagramPhotoAdapter extends ArrayAdapter<InstagramPhoto> {
         if(convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
-            viewHolder.tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
+            viewHolder.ivProfilePic = (ImageView) convertView.findViewById(R.id.ivProfilePic);
+            viewHolder.tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
+            viewHolder.tvCreatedTime = (TextView) convertView.findViewById(R.id.tvCreatedTime);
             viewHolder.ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
+            viewHolder.tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
+            viewHolder.tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-//        Picasso.with(activity).load(mayorShipImageLink).transform(new CircleTransform()).into(ImageView);
-        viewHolder.tvCaption.setText(iPhoto.username + ": " + iPhoto.caption);
+        Picasso.with(getContext()).load(iPhoto.profilePicUrl).transform(new CircleTransform()).into(viewHolder.ivProfilePic);
+        viewHolder.tvUsername.setText(iPhoto.username);
+        viewHolder.tvCreatedTime.setText(iPhoto.createdTime);
         viewHolder.ivPhoto.setImageResource(0);
-        Picasso.with(getContext()).load(iPhoto.url).fit().centerInside().into(viewHolder.ivPhoto);
+        Picasso.with(getContext()).load(iPhoto.mediaUrl).fit().centerInside().into(viewHolder.ivPhoto);
+        viewHolder.tvCaption.setText(iPhoto.caption);
+        DecimalFormat formatter = new DecimalFormat("###,###,###");
+        viewHolder.tvLikes.setText(formatter.format(iPhoto.likes) + " likes");
+
         return convertView;
     }
 }

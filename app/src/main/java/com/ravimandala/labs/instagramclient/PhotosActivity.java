@@ -2,6 +2,7 @@ package com.ravimandala.labs.instagramclient;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -57,15 +58,21 @@ public class PhotosActivity extends AppCompatActivity {
                         InstagramPhoto iPhoto = new InstagramPhoto();
                         if (photoJSON.optJSONObject("user") != null) {
                             iPhoto.username = photoJSON.getJSONObject("user").getString("username");
+                            iPhoto.profilePicUrl = photoJSON.getJSONObject("user").getString("profile_picture");
                         }
                         if (photoJSON.optJSONObject("caption") != null) {
                             iPhoto.caption = photoJSON.getJSONObject("caption").getString("text");
                         }
                         if (photoJSON.optJSONObject("images") != null &&
                                 photoJSON.getJSONObject("images").optJSONObject("standard_resolution") != null) {
-                            iPhoto.url = photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
+                            iPhoto.mediaUrl = photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
                         }
+                        if (photoJSON.optJSONObject("likes") != null) {
+                            iPhoto.likes = photoJSON.getJSONObject("likes").getInt("count");
+                        }
+                        iPhoto.createdTime = DateUtils.getRelativeTimeSpanString(photoJSON.getInt("created_time") * 1000L).toString();
                         iPhoto.type = photoJSON.getString("type");
+                        Log.d("Instagram", "iPhoto created. " + iPhoto);
                         if ("image".equals(iPhoto.type)) {
                             instagramPhotos.add(iPhoto);
                         }
