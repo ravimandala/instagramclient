@@ -13,10 +13,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by ravi.mandala on 2/7/16.
- */
 public class InstagramPhotoAdapter extends ArrayAdapter<InstagramPhoto> {
+    private static class ViewHolder {
+        TextView tvCaption;
+        ImageView ivPhoto;
+    }
 
     public InstagramPhotoAdapter(Context context, List<InstagramPhoto> objects) {
         super(context, android.R.layout.simple_list_item_1, objects);
@@ -25,15 +26,22 @@ public class InstagramPhotoAdapter extends ArrayAdapter<InstagramPhoto> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         InstagramPhoto iPhoto = getItem(position);
-        if(convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
-        }
-        TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
 
-        tvCaption.setText(iPhoto.username + ": " + iPhoto.caption);
-        ivPhoto.setImageResource(0);
-        Picasso.with(getContext()).load(iPhoto.url).into(ivPhoto);
+        ViewHolder viewHolder;
+        if(convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
+            viewHolder.tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
+            viewHolder.ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+//        Picasso.with(activity).load(mayorShipImageLink).transform(new CircleTransform()).into(ImageView);
+        viewHolder.tvCaption.setText(iPhoto.username + ": " + iPhoto.caption);
+        viewHolder.ivPhoto.setImageResource(0);
+        Picasso.with(getContext()).load(iPhoto.url).fit().centerInside().into(viewHolder.ivPhoto);
         return convertView;
     }
 }

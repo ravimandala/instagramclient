@@ -1,8 +1,8 @@
 package com.ravimandala.labs.instagramclient;
 
-import android.media.Image;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -37,14 +37,10 @@ public class PhotosActivity extends AppCompatActivity {
 
     // Send out the network request
     private void fetchPopularPhotos() {
-//
-//        Type => Video or Image
-//        URL
-//        Caption
-//        Author Name
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.instagram.com/v1/media/popular?client_id=";
-        client.get(url + getString(R.string.client_id), null, new JsonHttpResponseHandler() {
+
+        String apiEndpoint = "https://api.instagram.com/v1/media/popular?client_id=";
+        client.get(apiEndpoint + getString(R.string.client_id), null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray photosJSON = null;
@@ -59,20 +55,20 @@ public class PhotosActivity extends AppCompatActivity {
                         JSONObject photoJSON = photosJSON.getJSONObject(i);
 
                         InstagramPhoto iPhoto = new InstagramPhoto();
-                        if (photoJSON.has("user")) {
+                        if (photoJSON.optJSONObject("user") != null) {
                             iPhoto.username = photoJSON.getJSONObject("user").getString("username");
                         }
-                        if (photoJSON.has("caption")) {
+                        if (photoJSON.optJSONObject("caption") != null) {
                             iPhoto.caption = photoJSON.getJSONObject("caption").getString("text");
                         }
-                        if (photoJSON.getJSONObject("images") != null && photoJSON.getJSONObject("images").getJSONObject("standard_resolution") != null) {
+                        if (photoJSON.optJSONObject("images") != null &&
+                                photoJSON.getJSONObject("images").optJSONObject("standard_resolution") != null) {
                             iPhoto.url = photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
                         }
                         iPhoto.type = photoJSON.getString("type");
                         if ("image".equals(iPhoto.type)) {
                             instagramPhotos.add(iPhoto);
                         }
-
                     } catch (JSONException jsonException) {
                         jsonException.printStackTrace();
                     }
@@ -82,6 +78,7 @@ public class PhotosActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("Network", "Http request failed with statusCode = " + statusCode + " and error: " + throwable.getMessage());
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
